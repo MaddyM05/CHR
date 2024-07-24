@@ -1,0 +1,224 @@
+﻿<Page
+    x:Class="Chorus.WindowsReaderApp.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Chorus.WindowsReaderApp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:helper="using:Chorus.WindowsReader.Common"    
+    xmlns:models="using:Chorus.WindowsReader.Common.Models"
+    xmlns:converters ="using:Chorus.WindowsReader.Common.Converters"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <converters:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
+        <converters:BoolToVisibility x:Key="BoolToVisibilityConverter"/>
+        <Style TargetType="TextBlock" x:Key="TextBlockDefaultStyle">
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="AdervertisementRecived">
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="/Assets/chorus_logo.png" Width="150" Height="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,310,0"/>
+            <TextBlock Grid.Column="1" Text="Chorus Beacon - Windows Reader" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Center" FontWeight="Bold" Margin="-310,0,50,0"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid Margin="10 0 0 5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBox Grid.Row="0" PlaceholderText="Search by MAC address" FontFamily="Roboto" Foreground="#336699" BorderBrush="#336699" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="OnFilterChanged"/>
+                    <TextBox Grid.Row="1" PlaceholderText="Search by Company name" FontFamily="Roboto" Foreground="#336699" BorderBrush="#336699" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="OnFilterChanged" Margin="0,10,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="10,0,0,0" >
+                    <Button FontFamily="Segoe MDL2 Assets" Content="&#xE768;" Foreground="#336699" Background="#ffffff" Margin="0 0 5 0" BorderBrush="#336699" Height="32" Width="35" VerticalAlignment="Stretch" Command="{x:Bind ViewModel.StartScanCommand}" IsEnabled="{x:Bind ViewModel.IsButtonEnabled,Mode=OneWay}"   />
+                    <Button FontFamily="Segoe MDL2 Assets" Content="&#xE894;" Foreground="#336699" Background="#ffffff" BorderBrush="#336699" Width="35" VerticalAlignment="Stretch" Command="{x:Bind ViewModel.StopScanCommand}" IsEnabled="{x:Bind ViewModel.IsButtonEnabled,Mode=OneWay}"/>
+                </StackPanel>
+
+                <Border BorderBrush="Gray" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                        Margin="0,10,10,6">
+                    <Grid>
+                        <TextBlock Text="No Chorus Devices exist near by..." Margin="5,2,0,0"  Visibility="{x:Bind ViewModel.IsDeviceAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=1, Mode=OneWay}" />
+                        <ListView Margin="0,20,0,0" ScrollViewer.HorizontalScrollMode="Auto" ItemsSource="{x:Bind ViewModel.FilteredBeacons,Mode=TwoWay}" Width="Auto" 
+                            SelectedItem="{x:Bind ViewModel.SelectedBeacon,Mode=TwoWay}"                                  
+                            Grid.Row="3" IsItemClickEnabled="True"  DoubleTapped="OpenTagDetails" >
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Beacon">
+                                    <Border BorderBrush="LightGray" Width="705" BorderThickness=".5" Padding="5" Margin="5">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Raw Data:" FontWeight="Bold" Grid.Row="0" Style="{StaticResource AdervertisementRecived}"/>
+                                            <TextBlock Text="{x:Bind AdvertisementMessage}" Style="{StaticResource AdervertisementRecived}" Grid.Row="1"/>
+                                            <TextBlock Text="Company Name:" FontWeight="Bold" Grid.Row="2" Style="{StaticResource AdervertisementRecived}"/>
+                                            <TextBlock Text="{x:Bind CompanyName}" Style="{StaticResource AdervertisementRecived}" Grid.Row="3"/>
+
+                                            <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="100">
+                                                <StackPanel>
+                                                    <TextBlock Text="MAC Address:" FontWeight="Bold" Style="{StaticResource AdervertisementRecived}"/>
+                                                    <TextBlock Text="{x:Bind Address}" Style="{StaticResource AdervertisementRecived}"/>
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="RSSI:" FontWeight="Bold" Style="{StaticResource AdervertisementRecived}"/>
+                                                    <TextBlock Text="{x:Bind Rssi}" Style="{StaticResource AdervertisementRecived}" />
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="Org ID:" FontWeight="Bold" Grid.Row="8" Style="{StaticResource AdervertisementRecived}"/>
+                                                    <TextBlock Text="{x:Bind helper:GlobalHelper.AppSettings.OrganizationId}" Style="{StaticResource AdervertisementRecived}" Grid.Row="9"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="10" Orientation="Horizontal" Spacing="100" VerticalAlignment="Center" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Device Location Time UTC:" FontWeight="Bold" Style="{StaticResource AdervertisementRecived}" />
+                                                    <TextBlock Text="{x:Bind UTCTime}" Style="{StaticResource AdervertisementRecived}" />
+
+                                                </StackPanel>
+                                                <StackPanel VerticalAlignment="Center" Margin="55,0,0,0">
+                                                    <TextBlock Text="Device Location Time Now:" FontWeight="Bold" Grid.Row="12" Style="{StaticResource AdervertisementRecived}"/>
+                                                    <TextBlock Text="{x:Bind LocalTime}" Style="{StaticResource AdervertisementRecived}" Grid.Row="13"/>
+
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <TextBlock Text="Device Location" FontWeight="Bold" Grid.Row="14" Style="{StaticResource AdervertisementRecived}"/>
+                                            <TextBlock Text="{x:Bind Location}"  Style="{StaticResource AdervertisementRecived}" Grid.Row="15"/>
+                                            <TextBlock Text="Device Id:" FontWeight="Bold" Grid.Row="16"/>
+                                            <TextBlock Text="{x:Bind helper:GlobalHelper.DeviceId}" Style="{StaticResource AdervertisementRecived}" Grid.Row="17"/>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="1" RowSpacing="30" >
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" Spacing="30" >
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Organization Name:" Style="{StaticResource TextBlockDefaultStyle}" FontWeight="Bold"/>
+                        <TextBlock Text="{x:Bind helper:GlobalHelper.AppSettings.OrganizationName}" Style="{StaticResource TextBlockDefaultStyle}"/>
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Organization Id:" Style="{StaticResource TextBlockDefaultStyle}" FontWeight="Bold" />
+                        <TextBlock Text="{x:Bind helper:GlobalHelper.AppSettings.OrganizationId}" Style="{StaticResource TextBlockDefaultStyle}" />
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Device Id:" Style="{StaticResource TextBlockDefaultStyle}" FontWeight="Bold"/>
+                        <TextBlock Text="{x:Bind helper:GlobalHelper.DeviceId}" Style="{StaticResource TextBlockDefaultStyle}"/>
+                    </StackPanel>
+                    <StackPanel Margin="60,0,0,0" Spacing="5">
+                        <Button Content="Logs" Command="{x:Bind ViewModel.ShowLogsCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="Location:" Style="{StaticResource TextBlockDefaultStyle}" FontWeight="Bold"/>
+                    <TextBlock Text="{x:Bind ViewModel.CoordinatesText,Mode=OneWay}" Style="{StaticResource TextBlockDefaultStyle}" />
+                    <TextBlock Text="{x:Bind ViewModel.LocationSourceText,Mode=OneWay}" Style="{StaticResource TextBlockDefaultStyle}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                    <TextBlock  Text="05:00" Style="{StaticResource TextBlockDefaultStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="{x:Bind ViewModel.ScanBlock,Mode=OneWay}" Style="{StaticResource TextBlockDefaultStyle}"  Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Bind ViewModel.BleTimerTextBlock,Mode=OneWay}" Style="{StaticResource TextBlockDefaultStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3">
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Name="DescriptionTextBlock" Grid.Row="1" FontSize="12"/>
+                    <TextBlock Style="{StaticResource TextBlockDefaultStyle}" Grid.Row="2" Text="Payload Upload Status :" Margin="0,0,0,14" FontWeight="bold"/>
+                    <Border BorderThickness="1" BorderBrush="Black" Grid.Row="3" VerticalAlignment="Stretch" Margin="0,0,10,10.5">
+                        <ListView 
+                            ItemsSource="{x:Bind ViewModel.PayloadResponses, Mode=OneWay}"
+                            Margin="10"
+                            Height="Auto" VerticalAlignment="top"
+                            SelectedItem="{x:Bind ViewModel.SelectedPayload,Mode=TwoWay}"
+                            IsItemClickEnabled="True"  DoubleTapped="OpenPayloadDetails"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderThickness="1" BorderBrush="LightGray">
+                                        <TextBlock Text="{Binding Converter={StaticResource ObjectToStringConverter}}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
+
